@@ -11,4 +11,4 @@ return [
         'password' => $_ENV['DB_PASSWORD'],
         'charset' => 'utf8mb4'
     ]
-]; 
+];

@@ -26,7 +26,7 @@ project/
 │ ├── apache/
 │ ├── php/
 │ └── mysql/ # MySQL configuration
-├── docker-compose.yml
+├── docker compose.yml
 ├── .env.example
 └── README.md
 ```
@@ -53,34 +53,32 @@ cp .env.example .env
 3. Start the Docker containers:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 4. Install API dependencies:
 
 ```bash
-docker-compose exec api composer install
+docker compose exec api composer install
 ```
 
 5. Install frontend dependencies:
 
 ```bash
-docker-compose exec frontend npm install
+docker compose exec frontend npm install
 ```
 
 6. Run migrations:
 
 ```bash
-docker-compose exec api vendor/bin/doctrine-migrations migrate
+docker compose exec api vendor/bin/doctrine-migrations migrate
 ```
 
 7. Start the development server:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
-
-
 
 ## Services and Ports
 
@@ -104,12 +102,58 @@ MySQL database is accessible on port 3306. Database management can be done throu
 Migrations are handled using Doctrine Migrations. To create a new migration, run:
 
 ```bash
-docker-compose exec api vendor/bin/doctrine-migrations generate
+docker compose exec api vendor/bin/doctrine-migrations generate
 ```
 
 To run migrations:
 
 ```bash
-docker-compose exec api vendor/bin/doctrine-migrations migrate
+docker compose exec api vendor/bin/doctrine-migrations migrate
+```
+
+## Code Quality Tools
+
+### PHP_CodeSniffer
+PHPCS is used to ensure code follows PSR-12 coding standards. To run the code style checker:
+
+```bash
+docker compose exec api vendor/bin/phpcs
+```
+
+To automatically fix code style issues:
+
+```bash
+docker compose exec api vendor/bin/phpcbf
+```
+
+### PHPStan
+PHPStan performs static analysis to find potential bugs. To run PHPStan:
+
+```bash
+docker compose exec api vendor/bin/phpstan analyse
+```
+
+The analysis is set to level 8 (highest) in `phpstan.neon`. Adjust the level in the configuration file if needed.
+
+## Git Hooks
+
+The project includes a pre-commit hook that runs code quality checks before each commit. The hook:
+- Runs PHP_CodeSniffer to check coding standards
+- Runs PHPStan for static analysis
+
+If any check fails, the commit will be aborted. Fix the reported issues and try committing again.
+
+To skip the pre-commit hook in exceptional cases (not recommended), use:
+```bash
+git commit -m "Your message" --no-verify
+```
+
+### Setting up Git Hooks
+To install the Git hooks:
+
+```bash
+cd api
+chmod +x setup-hooks.sh
+./setup-hooks.sh
 ```
 

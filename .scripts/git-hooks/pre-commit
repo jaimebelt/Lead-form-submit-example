@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "Running Code Quality Checks..."
+
+# Run PHP CodeSniffer
+echo "Running PHP CodeSniffer..."
+docker-compose exec -T api vendor/bin/phpcs
+if [ $? -ne 0 ]; then
+    echo "PHP CodeSniffer failed. Please fix the reported issues before committing."
+    exit 1
+fi
+
+# Run PHPStan
+echo "Running PHPStan..."
+docker-compose exec -T api vendor/bin/phpstan analyse
+if [ $? -ne 0 ]; then
+    echo "PHPStan failed. Please fix the reported issues before committing."
+    exit 1
+fi
+
+echo "All code quality checks passed!"
+exit 0

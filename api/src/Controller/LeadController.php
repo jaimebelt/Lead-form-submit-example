@@ -19,9 +19,25 @@ class LeadController
 
     public function getLeads(Request $request, Response $response): Response
     {
-        $leads = $this->leadRepository->findAll();
-        
-        $response->getBody()->write(json_encode($leads));
-        return $response->withHeader('Content-Type', 'application/json');
+        try {
+            $leads = $this->leadRepository->getAllLeads();
+
+            if (empty($leads)) {
+                return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
+            }
+
+            $encodedLeads = json_encode($leads);
+            if ($encodedLeads === false) {
+                $reason = json_last_error_msg();
+                throw new \RuntimeException("Failed to encode leads to JSON: $reason");
+            }
+
+            $response->getBody()->write($encodedLeads);
+            return $response->withHeader('Content-Type', 'application/json');
+        } catch (\Exception $e) {
+            $errorMessage = json_encode(['error' => 'Internal server error']);
+            $response->getBody()->write($errorMessage === false ? 'Internal server error' : $errorMessage);
+            return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+        }
     }
-} 
+}

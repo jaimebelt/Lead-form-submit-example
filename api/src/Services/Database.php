@@ -11,6 +11,9 @@ class Database
 {
     private Connection $connection;
 
+    /**
+     * @param array<array-key, mixed> $connectionParams
+     */
     public function __construct(array $connectionParams)
     {
         $this->connection = DriverManager::getConnection($connectionParams);
@@ -20,4 +23,4 @@ class Database
     {
         return $this->connection;
     }
-} 
+}

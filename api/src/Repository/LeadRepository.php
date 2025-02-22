@@ -15,7 +15,12 @@ class LeadRepository
         $this->db = $connection;
     }
 
-    public function findAll(): array
+    /**
+     * Find all leads
+     * 
+     * @return array<array-key, mixed>
+     */
+    public function getAllLeads(): array
     {
         return $this->db->createQueryBuilder()
             ->select('*')
@@ -24,7 +29,10 @@ class LeadRepository
             ->fetchAllAssociative();
     }
 
-    public function create(array $data): void
+    /**
+     * @param array<array-key, mixed> $data
+     */
+    public function createNewLead(array $data): void
     {
         $this->db->insert('leads', [
             'name' => $data['name'],
@@ -33,4 +41,4 @@ class LeadRepository
             'created_at' => date('Y-m-d H:i:s')
         ]);
     }
-} 
+}
