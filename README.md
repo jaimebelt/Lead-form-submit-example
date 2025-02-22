@@ -27,6 +27,7 @@ project/
 │ ├── php/
 │ └── mysql/ # MySQL configuration
 ├── docker-compose.yml
+├── .env.example
 └── README.md
 ```
 
@@ -55,12 +56,30 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-
-3. Install API dependencies:
+4. Install API dependencies:
 
 ```bash
 docker-compose exec api composer install
 ```
+
+5. Install frontend dependencies:
+
+```bash
+docker-compose exec frontend npm install
+```
+
+6. Run migrations:
+
+```bash
+docker-compose exec api vendor/bin/doctrine-migrations migrate
+```
+
+7. Start the development server:
+
+```bash
+docker-compose up -d
+```
+
 
 
 ## Services and Ports
@@ -80,4 +99,17 @@ The frontend is developed using Angular 13 with Angular Material components. Dev
 
 ### Database
 MySQL database is accessible on port 3306. Database management can be done through PHPMyAdmin interface at `http://localhost:8081`.
+
+### Migrations
+Migrations are handled using Doctrine Migrations. To create a new migration, run:
+
+```bash
+docker-compose exec api vendor/bin/doctrine-migrations generate
+```
+
+To run migrations:
+
+```bash
+docker-compose exec api vendor/bin/doctrine-migrations migrate
+```
 
