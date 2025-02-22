@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Services\Database;
+use App\Service\Database;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Driver\Mysqli\Connection;
 

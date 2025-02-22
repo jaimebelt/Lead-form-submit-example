@@ -17,7 +17,7 @@ class LeadRepository
 
     /**
      * Find all leads
-     * 
+     *
      * @return array<array-key, mixed>
      */
     public function getAllLeads(): array

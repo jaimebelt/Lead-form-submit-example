@@ -15,6 +15,11 @@ Project is built using Docker and Docker Compose and uses the following technolo
 
 ```
 project/
+├── .scripts/ # Git hooks
+├── .docker/ # Docker configuration files
+│ ├── apache/
+│ ├── php/
+│ └── mysql/ # MySQL configuration
 ├── api/ # Slim Framework Backend
 │ ├── public/
 │ ├── src/
@@ -22,13 +27,11 @@ project/
 ├── frontend/ # Angular Frontend
 │ ├── src/
 │ └── package.json
-├── .docker/ # Docker configuration files
-│ ├── apache/
-│ ├── php/
-│ └── mysql/ # MySQL configuration
-├── docker compose.yml
+├── docker-compose.yml
 ├── .env.example
+├── setup-hooks.sh
 └── README.md
+
 ```
 
 ## Prerequisites
@@ -152,8 +155,16 @@ git commit -m "Your message" --no-verify
 To install the Git hooks:
 
 ```bash
-cd api
 chmod +x setup-hooks.sh
 ./setup-hooks.sh
 ```
+
+## Troubleshooting
+
+Composer dump-autoload:
+
+```bash
+docker compose exec api composer dump-autoload
+```
+
 
