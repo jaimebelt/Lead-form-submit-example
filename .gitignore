@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# IDE files
+.idea/
+.vscode/
+
+# Dependencies
+/api/vendor/
+/frontend/node_modules/
+
+# Logs
+*.log
+
+# Build files
+/frontend/dist/ 
