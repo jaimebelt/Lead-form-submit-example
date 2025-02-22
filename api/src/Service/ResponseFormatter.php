@@ -51,7 +51,7 @@ class ResponseFormatter
 
     public function validationError(
         ResponseInterface $response,
-        array $errors,
+        mixed $errors,
         int $statusCode = 422
     ): ResponseInterface {
         return $this->asJson($response, $errors, $statusCode, 'Validation error');
@@ -64,4 +64,4 @@ class ResponseFormatter
     ): ResponseInterface {
         return $this->asJson($response, null, $statusCode, $message);
     }
-} 
+}

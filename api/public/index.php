@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Exception\HttpNotFoundException;
@@ -10,7 +9,12 @@ use App\Service\ResponseFormatter;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Load container from bootstrap
+$container = require __DIR__ . '/../src/bootstrap.php';
+AppFactory::setContainer($container);
 $app = AppFactory::create();
+
+// Register services
 $responseFormatter = new ResponseFormatter();
 
 // Custom error handler
@@ -41,12 +45,8 @@ $errorMiddleware->setDefaultErrorHandler(
     }
 );
 
-$app->get('/api/health', function (Request $request, Response $response) use ($responseFormatter) {
-    return $responseFormatter->success(
-        $response,
-        [],
-        'System is healthy'
-    );
-});
+// Load routes
+$routes = require __DIR__ . '/../src/config/routes.php';
+$routes($app);
 
 $app->run();

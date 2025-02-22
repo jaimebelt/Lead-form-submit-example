@@ -5,20 +5,19 @@ declare(strict_types=1);
 use App\Service\Database;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Driver\Mysqli\Connection;
+use Psr\Container\ContainerInterface;
 
 $containerBuilder = new ContainerBuilder();
 
 $containerBuilder->addDefinitions([
-    // ... existing definitions ...
-
-    Database::class => function () {
-        $config = require __DIR__ . '/Config/database.php';
+    Database::class => function (ContainerInterface $container) {
+        $config = require __DIR__ . '/config/database.php';
         return new Database($config['database']);
     },
 
-    Connection::class => function (Database $database) {
-        return $database->getConnection();
+    Connection::class => function (ContainerInterface $container) {
+        return $container->get(Database::class)->getConnection();
     }
 ]);
 
-$container = $containerBuilder->build();
+return $containerBuilder->build();
