@@ -16,8 +16,6 @@ class LeadRepository
     }
 
     /**
-     * Find all leads
-     *
      * @return array<array-key, mixed>
      */
     public function getAllLeads(): array
@@ -30,15 +28,41 @@ class LeadRepository
     }
 
     /**
-     * @param array<array-key, mixed> $data
+     * @return array<array-key, mixed> | false
      */
-    public function createNewLead(array $data): void
+    public function getLeadByEmail(string $email): array | false
+    {
+        return $this->db->createQueryBuilder()
+            ->select('*')
+            ->from('leads')
+            ->where('email = :email')
+            ->setParameter('email', $email)
+            ->executeQuery()
+            ->fetchAssociative();
+    }
+
+    /**
+     * @param array<array-key, mixed> $data
+     * @return array<array-key, mixed> | false
+     */
+    public function createNewLead(array $data): array | false
     {
         $this->db->insert('leads', [
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'],
+            'phone' => $data['phone'] ?? null,
+            'source' => $data['source'],
             'created_at' => date('Y-m-d H:i:s')
         ]);
+
+        $lastInsertId = (int) $this->db->lastInsertId();
+
+        return $this->db->createQueryBuilder()
+            ->select('*')
+            ->from('leads')
+            ->where('id = :id')
+            ->setParameter('id', $lastInsertId)
+            ->executeQuery()
+            ->fetchAssociative();
     }
 }

@@ -33,14 +33,15 @@ $errorMiddleware->setDefaultErrorHandler(
         }
 
         $response = $app->getResponseFactory()->createResponse();
-        return $responseFormatter->asJson(
-            $response,
-            [
-                'error' => $exception->getMessage(),
-                'trace' => $displayErrorDetails ? $exception->getTraceAsString() : null
-            ],
-            $statusCode,
-            'An error occurred'
+
+        $error= [
+            'error' => $exception->getMessage(),
+            'trace' => $displayErrorDetails ? $exception->getTraceAsString() : null
+        ];
+        error_log("Error: " . json_encode($error));
+        return $responseFormatter->internalServerError(
+            response: $response,
+            statusCode: $statusCode,
         );
     }
 );

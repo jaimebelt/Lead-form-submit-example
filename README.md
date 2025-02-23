@@ -159,12 +159,37 @@ chmod +x setup-hooks.sh
 ./setup-hooks.sh
 ```
 
-## Troubleshooting
+## Useful commands
+
+Backend Logs:
+
+```bash
+docker compose logs api
+```
 
 Composer dump-autoload:
 
 ```bash
 docker compose exec api composer dump-autoload
+```
+
+Composer require:
+
+```bash
+docker compose exec api composer require <package>
+```
+
+Restart the Docker containers:
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+Reaload API env variables:
+
+```bash
+docker compose restart api frontend db
 ```
 
 
