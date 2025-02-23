@@ -1,0 +1,41 @@
+<mat-card>
+  <mat-card-title>Add New Lead</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Enter name">
+        <mat-error *ngIf="leadForm.get('name')?.hasError('required')">
+          Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Enter email">
+        <mat-error *ngIf="leadForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="leadForm.get('email')?.hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Source</mat-label>
+        <mat-select formControlName="source">
+          <mat-option *ngFor="let source of sources" [value]="source">
+            {{source}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="leadForm.get('source')?.hasError('required')">
+          Source is required
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="!leadForm.valid">
+        Submit Lead
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card> 
