@@ -17,16 +17,8 @@ Project is built using Docker and Docker Compose and uses the following technolo
 project/
 ├── .scripts/ # Git hooks
 ├── .docker/ # Docker configuration files
-│ ├── apache/
-│ ├── php/
-│ └── mysql/ # MySQL configuration
 ├── api/ # Slim Framework Backend
-│ ├── public/
-│ ├── src/
-│ └── composer.json
 ├── frontend/ # Angular Frontend
-│ ├── src/
-│ └── package.json
 ├── docker-compose.yml
 ├── .env.example
 ├── setup-hooks.sh
@@ -44,7 +36,7 @@ project/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/full-stack-app.git
+git clone git@github.com:jaimebelt/Lead-form-submit-example.git
 ```
 
 2. Create a `.env` file in the root directory and set the environment variables:
@@ -53,11 +45,14 @@ git clone https://github.com/yourusername/full-stack-app.git
 cp .env.example .env
 ```
 
-3. Start the Docker containers:
+3. Start the Docker containers (if you already install the project, please omit next steps project must running):
 
 ```bash
 docker compose up -d
 ```
+> **Important:** If first time usage, It can take sometime until FE packages are installed and server start running. Check docker logs  (See Useful commands section)   
+
+> **Note:**  Follow next steps if first time usage
 
 4. Install API dependencies:
 
@@ -65,22 +60,16 @@ docker compose up -d
 docker compose exec api composer install
 ```
 
-5. Install frontend dependencies:
-
-```bash
-docker compose exec frontend npm install
-```
-
-6. Run migrations:
+5. Run migrations (this will create the necessary tables in DB):
 
 ```bash
 docker compose exec api vendor/bin/doctrine-migrations migrate
 ```
 
-7. Start the development server:
+6. Troubleshooting: restart containers if not rendering the app in `http://localhost:4200`
 
 ```bash
-docker compose up -d
+docker compose restart api frontend db
 ```
 
 ## Services and Ports
@@ -88,7 +77,6 @@ docker compose up -d
 - Frontend (Angular): http://localhost:4200
 - Backend (Slim API): http://localhost:8080
 - MySQL Database: localhost:3306
-- PHPMyAdmin: http://localhost:8081
 
 ## Development
 
@@ -98,8 +86,6 @@ The API is built using Slim Framework 4 and follows PSR-4 autoloading standards.
 ### Frontend (Angular)
 The frontend is developed using Angular 13 with Angular Material components. Development server runs on `http://localhost:4200`.
 
-### Database
-MySQL database is accessible on port 3306. Database management can be done through PHPMyAdmin interface at `http://localhost:8081`.
 
 ### Migrations
 Migrations are handled using Doctrine Migrations. To create a new migration, run:
@@ -167,6 +153,12 @@ Backend Logs:
 docker compose logs api
 ```
 
+Frontend Logs:
+
+```bash
+docker  compose logs frontend
+```
+
 Composer dump-autoload:
 
 ```bash
@@ -186,10 +178,11 @@ docker compose down
 docker compose up -d
 ```
 
-Reaload API env variables:
+Reload API env variables:
 
 ```bash
 docker compose restart api frontend db
 ```
+
 
 
