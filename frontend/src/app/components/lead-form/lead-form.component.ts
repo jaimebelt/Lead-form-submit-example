@@ -28,21 +28,44 @@ export class LeadFormComponent {
       const leadPayload = this.leadForm.value;
       leadPayload.source = leadPayload.source.toLowerCase();
       this.leadService.createLead(leadPayload).subscribe({
-        next: () => {
-          this.leadForm.reset();
-          
-          this.snackBar.open('Lead created successfully', 'Close', {
+        next: (response) => {
+          this.snackBar.open('Lead created successfully!', 'Close', {
             duration: 3000,
             panelClass: ['success-snackbar']
           });
+          this.leadForm.reset();
+          // Reset validation states
+          Object.keys(this.leadForm.controls).forEach(key => {
+            const control = this.leadForm.get(key);
+            control?.setErrors(null);
+            control?.markAsUntouched();
+          });
+          this.leadService.triggerRefreshLeads();
         },
         error: (error) => {
           console.error('Error creating lead:', error);
-          
-          this.snackBar.open('Error creating lead', 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar']
-          });
+
+          if (error.error?.message) {
+            let message = error.error?.message;
+            if (error.error?.data) {
+              Object.keys(error.error.data).forEach(fieldName => {
+                const control = this.leadForm.get(fieldName);
+                if (control) {
+                  control.setErrors(error.error.data[fieldName]);
+                }
+                message += `\n(${fieldName}): ${error.error.data[fieldName]}`;
+              });
+            }
+            this.snackBar.open(message, 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+          } else {
+            this.snackBar.open('Error creating lead. Please try again.', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+          }
         }
       });
     }

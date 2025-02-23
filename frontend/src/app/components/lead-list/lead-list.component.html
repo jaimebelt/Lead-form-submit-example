@@ -4,7 +4,7 @@
     <table mat-table [dataSource]="leads">
       <ng-container matColumnDef="lead_id">
         <th mat-header-cell *matHeaderCellDef> ID </th>
-        <td mat-cell *matCellDef="let lead"> {{lead.lead_id}} </td>
+        <td mat-cell *matCellDef="let lead"> {{lead.id}} </td>
       </ng-container>
 
       <ng-container matColumnDef="name">

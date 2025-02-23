@@ -39,7 +39,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatTableModule,
     MatSnackBarModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
