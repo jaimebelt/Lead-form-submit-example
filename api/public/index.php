@@ -6,6 +6,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Exception\HttpNotFoundException;
 use App\Service\ResponseFormatter;
+use App\Middleware\CorsMiddleware;
+use Psr\Log\LoggerInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -14,18 +16,25 @@ $container = require __DIR__ . '/../src/bootstrap.php';
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-// Register services
-$responseFormatter = new ResponseFormatter();
+// Add CORS middleware
+$app->add($container->get(CorsMiddleware::class));
 
-// Custom error handler
+// Handle preflight OPTIONS requests
+$app->options('/{routes:.+}', function ($request, $response) {
+    return $response;
+});
+
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();
 $errorHandler->forceContentType('application/json');
 
-// Override the default error handler
+$responseFormatter = $container->get(ResponseFormatter::class);
+$logger = $container->get(LoggerInterface::class);
+
+// Override the default error handler to return a JSON response
 $errorMiddleware->setDefaultErrorHandler(
     function (Request $request, Throwable $exception, bool $displayErrorDetails) 
-    use ($app, $responseFormatter) {
+    use ($app, $responseFormatter, $logger) {
         $statusCode = 500;
         
         if ($exception instanceof HttpNotFoundException) {
@@ -38,7 +47,9 @@ $errorMiddleware->setDefaultErrorHandler(
             'error' => $exception->getMessage(),
             'trace' => $displayErrorDetails ? $exception->getTraceAsString() : null
         ];
-        error_log("Error: " . json_encode($error));
+
+        $logger->error('Unhandled exception: ' . $exception->getMessage(), $error);
+
         return $responseFormatter->internalServerError(
             response: $response,
             statusCode: $statusCode,

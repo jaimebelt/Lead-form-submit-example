@@ -8,6 +8,7 @@ use App\Repository\LeadRepository;
 use App\Service\ExternalApiService;
 use App\Service\ResponseFormatter;
 use App\Service\ValidationService;
+use App\Middleware\CorsMiddleware;
 use DI\ContainerBuilder;
 use Doctrine\DBAL\Driver\Mysqli\Connection;
 use GuzzleHttp\Client;
@@ -19,6 +20,11 @@ use Monolog\Logger as MonologLogger;
 $containerBuilder = new ContainerBuilder();
 
 $containerBuilder->addDefinitions([
+    CorsMiddleware::class => function (ContainerInterface $container) {
+        $config = require __DIR__ . '/config/cors.php';
+        return new CorsMiddleware($config['cors']);
+    },
+
     Database::class => function (ContainerInterface $container) {
         $config = require __DIR__ . '/config/database.php';
         return new Database($config['database']);
